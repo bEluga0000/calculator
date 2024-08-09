@@ -24,7 +24,7 @@ const Button: React.FC<ButtonProps> = ({
     return (
         <button
             className={`${color} ${bg} w-20 h-20 flex items-center justify-center rounded-full sm:w-16 sm:h-16 ${textSize} font-medium 
-            ${disable ? 'opacity-50 cursor-not-allowed' : 'hover:cursor-pointer'}`}
+            ${disable ? 'opacity-50 cursor-not-allowed' : 'hover:cursor-pointer'} `}
             disabled={disable}
             onClick={disable ? undefined : onClick ? onClick : () => {
                 console.log(inVal.length)

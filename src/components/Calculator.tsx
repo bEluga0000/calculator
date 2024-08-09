@@ -118,7 +118,7 @@ const Calculator = () => {
         setSymbolClickState(false)
     }
     return (
-        <div className="fixed bottom-0 p-4">
+        <div className="fixed bottom-0 p-4 md:w-[468px]">
             <div className="mb-4">
                 <input
                     type="text"
