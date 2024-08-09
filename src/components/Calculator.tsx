@@ -110,6 +110,12 @@ const Calculator = () => {
         setSymbol(undefined);
         setSymbolClickState(false);
     };
+    const handelInputClearButton = ()=>{
+        setInVal("")
+        setSymbol(undefined)
+        setPointState(false)
+        setSymbolClickState(false)
+    }
     const handelClearButton = ()=>{
         setInVal("")
         setSymbol(undefined)
@@ -157,7 +163,7 @@ const Calculator = () => {
                     <BlackButton value="0" />
                 </div>
                 <div className="flex flex-col gap-1">
-                    <GrayButton value="+/-" disable={true} />
+                    <GrayButton value="C" onclick={handelInputClearButton} />
                     <BlackButton value="8" />
                     <BlackButton value="5" />
                     <BlackButton value="2" />
