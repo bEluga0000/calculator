@@ -1,3 +1,4 @@
+import { HistoryTextProps } from '@/components/HistoryText'
 import {atom} from 'recoil'
 export const ValueState = atom<string>({
     key:'ValueState',
@@ -15,11 +16,13 @@ export const SymbolState = atom<string|undefined>({
     key:'SymbolState',
     default:undefined
 })
-export const Num1State = atom<number|null>({
+export const Num1State = atom<number>({
     key:'Num1State',
-    default:null
+    default:0
 })
-export const Num2State = atom<number|null>({
-    key:'Num2State',
-    default:null
-})
+
+export const HistoryState = atom<HistoryTextProps[]>({
+    key: 'HistoryState',
+    default: [],
+});
+

@@ -1,17 +1,16 @@
 import Calculator from "@/components/Calculator";
+import History from "@/components/History";
 import { RecoilRoot } from "recoil";
 
 export default function Home() {
   return (
     <RecoilRoot>
-      <div>
-        <div className="flex min-h-screen flex-col sm:flex-row">
-          <div className="sm:flex-1 flex sm:items-center justify-center">
-            hello
-          </div>
-          <div className="sm:flex-1 relative">
-            <Calculator />
-          </div>
+      <div className="sm:grid sm:grid-cols-12 h-screen">
+        <div className="sm:col-span-6 sm:block hidden ">
+          <History />
+        </div>
+        <div className="sm:col-span-6 flex items-center justify-center">
+          <Calculator />
         </div>
       </div>
     </RecoilRoot>

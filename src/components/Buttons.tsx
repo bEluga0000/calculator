@@ -27,8 +27,18 @@ const Button: React.FC<ButtonProps> = ({
             ${disable ? 'opacity-50 cursor-not-allowed' : 'hover:cursor-pointer'}`}
             disabled={disable}
             onClick={disable ? undefined : onClick ? onClick : () => {
-                let strVal = inVal + value;
-                setValue(strVal);
+                console.log(inVal.length)
+                if (inVal.length > 5) {
+                    alert("Cannot enter more than 6 digit")
+                }
+                else {
+                    if (inVal.includes("Error")) {
+                        setValue(value);
+                    } else {
+                        let strVal = inVal + value;
+                        setValue(strVal);
+                    }
+                }
             }}
         >
             {value}

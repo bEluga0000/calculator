@@ -2,7 +2,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import BlackButton from "./BlackButtons";
 import GrayButton from "./GrayButtons";
 import OrangeButton from "./OrangeButtons";
-import { Num1State, PointState, SymbolClickState, SymbolState, ValueState } from "@/atoms/value";
+import { HistoryState, Num1State, PointState, SymbolClickState, SymbolState, ValueState } from "@/atoms/value";
 import { useEffect, useState } from "react";
 
 const Calculator = () => {
@@ -20,6 +20,7 @@ const Calculator = () => {
     const [addClick, setAddClick] = useState(false)
     const [divClick, setDivClick] = useState(false)
     const [mulClick, setMulClick] = useState(false)
+    const setHistory = useSetRecoilState(HistoryState)
     useEffect(() => {
         if (symbol == '-')
             setMinClick(true)
@@ -43,52 +44,79 @@ const Calculator = () => {
         setInVal(str)
     }
     const handelPoint = () => {
-        let strVal = inVal + ".";
-        setInVal(strVal);
-        setPointState(true)
+        if (inVal.length > 5) {
+            alert("Cannot able to add at place 6")
+        }else{
+            let strVal = inVal + ".";
+            setInVal(strVal);
+            setPointState(true)
+        }
     }
-    const handelSymbolButton = (s:string)=>{
-        let i = parseFloat(inVal)
-        setNum1(i)
-        setInVal("")
-        setSymbolClickState(true)
-        setSymbol(s)
+    const handelSymbolButton = (s: string) => {
+        if(inVal.length>6)
+        {
+            alert("Only 6 digit numbers ar accepted")
+        }
+        else
+        {
+            let i = parseFloat(inVal)
+            setNum1(i)
+            setInVal("")
+            setSymbolClickState(true)
+            setSymbol(s)
+        }
     }
     const handelEqualSymbol = () => {
         const n2 = parseFloat(inVal);
+        console.log(n2)
+        let ans: number | string = 0;
 
-        if (num1 && n2) { 
-            let ans;
-            switch (symbol) {
-                case '-':
-                    ans = num1 - n2;
-                    break;
-                case '+':
-                    ans = num1 + n2;
-                    break;
-                case '*':
-                    ans = num1 * n2;
-                    break;
-                case '/':
-                    if (n2 === 0) {
-                        console.log('Division by zero');
-                        setInVal("Error");
-                    } else {
-                        ans = num1 / n2;
-                    }
-                    break;
-                default:
-                    console.log('Invalid symbol');
-                    return;
-            }
-            setInVal("" + ans);
-        } else {
-            console.log('Invalid input');
-            setInVal("Error");
+        switch (symbol) {
+            case '-':
+                ans = num1 - n2;
+                if (!Number.isInteger(ans)) {
+                    ans = ans.toFixed(2)
+                } 
+                break;
+            case '+':
+                ans = num1 + n2;
+                if (!Number.isInteger(ans)) {
+                    ans = ans.toFixed(2)
+                } 
+                break;
+            case '*':
+                ans = num1 * n2;
+                if (!Number.isInteger(ans)) {
+                    ans = ans.toFixed(2)
+                } 
+                break;
+            case '/':
+                if (n2 === 0) {
+                    ans = "Error"
+                    setInVal("Error");
+                } else {
+                    ans = num1 / n2;
+                    if (!Number.isInteger(ans)) {
+                        ans = ans.toFixed(2)
+                    } 
+                }
+                break;
+            default:
+                console.log('Invalid symbol');
+                return;
         }
+        setInVal("" + ans);
+        setHistory(prevHistory => [{ ans: "" + ans, num1: "" + num1, num2: "" + n2, symbol }, ...prevHistory]);
         setSymbol(undefined);
         setSymbolClickState(false);
     };
+    const handelClearButton = ()=>{
+        setInVal("")
+        setSymbol(undefined)
+        setHistory([])
+        setPointState(false)
+        setSymbolClickState(false)
+    }
     return (
         <div className="fixed bottom-0 p-4">
             <div className="mb-4">
@@ -102,7 +130,19 @@ const Calculator = () => {
                         whiteSpace: 'nowrap'
                     }}
                     onChange={(e) => {
-                        setInVal(e.target.value)
+                        if(e.target.value.length > 6 )
+                        {
+                            alert("Cannot enter more than 6 digit")
+                        }else{
+                            const newValue = e.target.value;
+                            console.log(newValue)
+                            if (newValue.includes("Error")) {
+                                setInVal(newValue.replace("Error", ""));
+                            } else {
+                                setInVal(newValue);
+                            }
+                        }
+                        
                     }}
                     value={inVal}
                     placeholder="0"
@@ -110,7 +150,7 @@ const Calculator = () => {
             </div>
             <div className="grid grid-cols-4 gap-1 place-items-center">
                 <div className="flex flex-col gap-1">
-                    <GrayButton value="AC" disable={true} />
+                    <GrayButton value="AC"  onclick={handelClearButton}/>
                     <BlackButton value="7" />
                     <BlackButton value="4" />
                     <BlackButton value="1" />
@@ -131,7 +171,7 @@ const Calculator = () => {
                     <BlackButton value="." disable={pointState || inVal.length == 0} onclick={handelPoint} />
                 </div>
                 <div className="flex flex-col gap-1">
-                    <OrangeButton value="/" bg={divClick && symbolClick ? "bg-white" : ""} color={divClick && symbolClick ? "text-amber-400" : ""} disable={symbolClick || inVal.length == 0 } onclick={()=>handelSymbolButton("/")}/>
+                    <OrangeButton value="/" bg={divClick && symbolClick ? "bg-white" : ""} color={divClick && symbolClick ? "text-amber-400" : ""} disable={symbolClick || inVal.length == 0} onclick={() => handelSymbolButton("/")} />
                     <OrangeButton value="*" bg={mulClick && symbolClick ? "bg-white" : ""} color={mulClick && symbolClick ? "text-amber-400" : ""} disable={symbolClick || inVal.length == 0} onclick={() => handelSymbolButton("*")} />
                     <OrangeButton value="-" bg={minClick && symbolClick ? "bg-white" : ""} color={minClick && symbolClick ? "text-amber-400" : ""} disable={symbolClick || inVal.length == 0} onclick={() => handelSymbolButton("-")} />
                     <OrangeButton value="+" bg={addClick && symbolClick ? "bg-white" : ""} color={addClick && symbolClick ? "text-amber-400" : ""} disable={symbolClick || inVal.length == 0} onclick={() => handelSymbolButton("+")} />
